@@ -14,7 +14,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot(),
     JwtModule.register({
       secret: process.env.JWT_SECRET, // Hoặc cấu hình theo nhu cầu của bạn
-      signOptions: { expiresIn: '60m' },
+      signOptions: { expiresIn: '600m' },
     }),
   ],
   controllers: [TasksController], // Đăng ký controller
