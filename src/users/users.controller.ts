@@ -10,12 +10,15 @@ import {
   HttpStatus,
   NotFoundException,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { ResponseInterceptor } from './../common/response/response.interceptor';
 
 @Controller('users')
+@UseInterceptors(ResponseInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

@@ -7,7 +7,8 @@ import { CatsModule } from './cats/cats.module';
 import { TasksModule } from './tasks/tasks.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-
+import { ResponseInterceptor } from './/common/response/response.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
@@ -15,6 +16,12 @@ import { AuthModule } from './auth/auth.module';
     TasksModule,
     UsersModule,
     AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
   ],
 })
 export class AppModule implements NestModule {

@@ -12,6 +12,7 @@ import {
   UseGuards,
   NotFoundException,
   Req,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import {
@@ -25,9 +26,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '../auth/auth.guard';
 import { TaskOwnerGuard } from './guards/task-owner.guard';
 import { JwtPayload } from '../auth/jwt.payload';
-
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { ResponseInterceptor } from './../common/response/response.interceptor';
 @Controller('tasks')
-@UseGuards(AuthGuard) // Áp dụng AuthGuard cho toàn bộ controller
+@UseInterceptors(ResponseInterceptor)
+@UseGuards(AuthGuard) // auth
 export class TasksController {
   constructor(
     private readonly tasksService: TasksService,
@@ -37,6 +41,8 @@ export class TasksController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @Roles('manager', 'admin')
+  @UseGuards(RolesGuard)
   async create(
     @Body() createTaskDto: CreateTaskDto,
     @Req() req: { user: JwtPayload },
@@ -47,7 +53,7 @@ export class TasksController {
       userId: req.user.sub, // Gán userId từ JWT payload
     });
     return {
-      message: 'Tạo task thành công',
+      // message: 'Tạo task thành công',
       task,
     };
   }
@@ -94,8 +100,9 @@ export class TasksController {
   }
 
   @Delete(':id')
+  @UseGuards(TaskOwnerGuard, RolesGuard)
+  @Roles('manager', 'admin')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(TaskOwnerGuard)
   async remove(@Param('id') id: string) {
     await this.tasksService.remove(id);
     return {

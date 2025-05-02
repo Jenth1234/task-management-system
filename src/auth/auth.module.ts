@@ -13,7 +13,7 @@ import { User } from '../users/users.entity';
     ConfigModule.forRoot(),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'defaultSecret',
-      signOptions: { expiresIn: '60m' },
+      signOptions: { expiresIn: '600m' },
     }),
   ],
   providers: [AuthService, UsersService],
