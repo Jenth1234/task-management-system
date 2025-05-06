@@ -78,7 +78,7 @@ export class TasksController {
   ) {
     const tasks = await this.tasksService.findAll({
       ...query,
-      userId: req.user.sub, // Lọc task theo userId
+      userId: req.user.sub,
     });
     return {
       message: 'Tìm danh sách task thành công',

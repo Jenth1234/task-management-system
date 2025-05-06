@@ -99,7 +99,11 @@ export class TasksService {
     const queryBuilder = this.taskRepository
       .createQueryBuilder('task')
       .where('task.userId = :userId', { userId });
-
+    if (userId) {
+      queryBuilder.where('task.userId = :userId', { userId });
+    } else if (assignedby) {
+      queryBuilder.where('task.assignedby = :assignedby', { assignedby });
+    }
     // Áp dụng bộ lọc động
     const filters = {
       status,
